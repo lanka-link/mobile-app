@@ -1,0 +1,305 @@
+import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+
+// ---- "Kade" palette: royal blue with a fresh green accent (fintech style) ----
+// NOTE: field names are unchanged on purpose — every screen in the app
+// references these directly (KadeColors.teal, .tealDark, .terra, etc.), so
+// only the *values* change here. Renaming would break every other file.
+class KadeColors {
+  // shared brand — royal blue for light mode, a lighter blue for dark mode
+  // (so it still reads clearly against a near-black background)
+  static const teal = Color(0xFF2A5BDB); // royal blue — primary (light)
+  static const tealDark = Color(0xFF5B8DEF); // light blue — primary (dark)
+  static const amber = Color(0xFFE0A100); // gold — warning accent
+  static const terra = Color(0xFFE5484D); // red — error accent
+
+  // green call-to-action accent (the "Buy" style buttons)
+  static const accent = Color(0xFF3DDC97);
+  // blue gradient for page headers
+  static const headerGradient = [Color(0xFF2A5BDB), Color(0xFF4A8BF0)];
+  // soft blue-tinted card shadow
+  static const cardShadow = Color(0x1A2A5BDB);
+
+  // semantic (used across both themes for status/state)
+  static const success = Color(0xFF22B573);
+  static const successDark = Color(0xFF4CD39A);
+  static const danger = terra; // reuse terra as the "error" accent
+  static const dangerDark = Color(0xFFEF5350);
+  static const warning = amber; // reuse amber as the "warning" accent
+  static const warningDark = Color(0xFFFFC107);
+  static const info = teal;
+  static const infoDark = tealDark;
+
+  // light — cool blue-gray background, white cards
+  static const bgLight = Color(0xFFF2F5FA);
+  static const surfaceLight = Color(0xFFFFFFFF);
+  static const surfaceMutedLight = Color(0xFFEDF1F8);
+  static const borderLight = Color(0xFFE3E8F0);
+  static const textLight = Color(0xFF2B3445);
+  static const textSoftLight = Color(0xFF8A94A6);
+
+  // dark — near-black navy, premium fintech feel
+  static const bgDark = Color(0xFF0B1220);
+  static const surfaceDark = Color(0xFF141B2E);
+  static const surfaceMutedDark = Color(0xFF1C253B);
+  static const borderDark = Color(0xFF283249);
+  static const textDark = Color(0xFFEFF2F7);
+  static const textSoftDark = Color(0xFFA3ADC2);
+}
+
+// ---- Shared spacing & radius scale (reference these instead of raw numbers) ----
+class KadeSpacing {
+  static const xs = 4.0;
+  static const sm = 8.0;
+  static const md = 16.0;
+  static const lg = 24.0;
+  static const xl = 32.0;
+  static const xxl = 48.0;
+}
+
+class KadeRadius {
+  static const sm = 8.0;
+  static const md = 14.0;
+  static const lg = 20.0; // matches CardTheme below
+  static const pill = 999.0;
+}
+
+TextTheme _buildTextTheme(Color primary, Color soft) {
+  final base = TextTheme(
+    displayLarge: TextStyle(fontSize: 32, fontWeight: FontWeight.w700, color: primary, height: 1.2),
+    displayMedium: TextStyle(fontSize: 28, fontWeight: FontWeight.w700, color: primary, height: 1.2),
+    headlineLarge: TextStyle(fontSize: 24, fontWeight: FontWeight.w700, color: primary, height: 1.25),
+    headlineMedium: TextStyle(fontSize: 20, fontWeight: FontWeight.w600, color: primary, height: 1.3),
+    titleLarge: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: primary),
+    titleMedium: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: primary),
+    titleSmall: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: primary),
+    bodyLarge: TextStyle(fontSize: 16, fontWeight: FontWeight.w400, color: primary, height: 1.5),
+    bodyMedium: TextStyle(fontSize: 14, fontWeight: FontWeight.w400, color: primary, height: 1.5),
+    bodySmall: TextStyle(fontSize: 12, fontWeight: FontWeight.w400, color: soft, height: 1.4),
+    labelLarge: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: primary),
+    labelMedium: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: soft),
+    labelSmall: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: soft),
+  );
+  // Applies Rubik (downloaded/cached by google_fonts) to every style above
+  // while keeping the sizes/weights/colors we set — a soft, rounded fintech
+  // look. Sinhala text falls back to the phone's Sinhala font.
+  return GoogleFonts.rubikTextTheme(base);
+}
+
+ThemeData buildLightTheme() {
+  final textTheme = _buildTextTheme(KadeColors.textLight, KadeColors.textSoftLight);
+  return ThemeData(
+    useMaterial3: true,
+    brightness: Brightness.light,
+    scaffoldBackgroundColor: KadeColors.bgLight,
+    colorScheme: ColorScheme.fromSeed(
+      seedColor: KadeColors.teal,
+      primary: KadeColors.teal,
+      surface: KadeColors.surfaceLight,
+      error: KadeColors.danger,
+      brightness: Brightness.light,
+    ),
+    textTheme: textTheme,
+    dividerTheme: const DividerThemeData(color: KadeColors.borderLight, thickness: 1, space: 1),
+    iconTheme: const IconThemeData(color: KadeColors.textSoftLight, size: 22),
+    cardTheme: CardThemeData(
+      color: KadeColors.surfaceLight,
+      elevation: 3,
+      shadowColor: KadeColors.cardShadow,
+      surfaceTintColor: Colors.transparent,
+      margin: EdgeInsets.zero,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(KadeRadius.lg)),
+    ),
+    inputDecorationTheme: _inputTheme(
+      KadeColors.surfaceLight,
+      KadeColors.borderLight,
+      KadeColors.teal,
+      KadeColors.danger,
+    ),
+    appBarTheme: AppBarTheme(
+      backgroundColor: KadeColors.bgLight,
+      foregroundColor: KadeColors.textLight,
+      elevation: 0,
+      centerTitle: false,
+      titleTextStyle: GoogleFonts.rubik(
+        fontSize: 20,
+        fontWeight: FontWeight.w700,
+        color: KadeColors.textLight,
+      ),
+    ),
+    elevatedButtonTheme: _elevatedButtonTheme(KadeColors.teal, Colors.white),
+    filledButtonTheme: _filledButtonTheme(KadeColors.teal, Colors.white),
+    navigationBarTheme: _navBarTheme(KadeColors.surfaceLight, KadeColors.teal, KadeColors.textSoftLight),
+    outlinedButtonTheme: _outlinedButtonTheme(KadeColors.teal, KadeColors.borderLight),
+    textButtonTheme: _textButtonTheme(KadeColors.teal),
+    snackBarTheme: _snackBarTheme(KadeColors.textLight, KadeColors.surfaceLight),
+    chipTheme: _chipTheme(KadeColors.surfaceMutedLight, KadeColors.textLight, KadeColors.borderLight),
+  );
+}
+
+ThemeData buildDarkTheme() {
+  final textTheme = _buildTextTheme(KadeColors.textDark, KadeColors.textSoftDark);
+  return ThemeData(
+    useMaterial3: true,
+    brightness: Brightness.dark,
+    scaffoldBackgroundColor: KadeColors.bgDark,
+    colorScheme: ColorScheme.fromSeed(
+      seedColor: KadeColors.tealDark,
+      primary: KadeColors.tealDark,
+      surface: KadeColors.surfaceDark,
+      error: KadeColors.dangerDark,
+      brightness: Brightness.dark,
+    ),
+    textTheme: textTheme,
+    dividerTheme: const DividerThemeData(color: KadeColors.borderDark, thickness: 1, space: 1),
+    iconTheme: const IconThemeData(color: KadeColors.textSoftDark, size: 22),
+    cardTheme: CardThemeData(
+      color: KadeColors.surfaceDark,
+      elevation: 0,
+      margin: EdgeInsets.zero,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(KadeRadius.lg),
+        side: const BorderSide(color: KadeColors.borderDark),
+      ),
+    ),
+    inputDecorationTheme: _inputTheme(
+      KadeColors.surfaceDark,
+      KadeColors.borderDark,
+      KadeColors.tealDark,
+      KadeColors.dangerDark,
+    ),
+    appBarTheme: AppBarTheme(
+      backgroundColor: KadeColors.bgDark,
+      foregroundColor: KadeColors.textDark,
+      elevation: 0,
+      centerTitle: false,
+      titleTextStyle: GoogleFonts.rubik(
+        fontSize: 20,
+        fontWeight: FontWeight.w700,
+        color: KadeColors.textDark,
+      ),
+    ),
+    elevatedButtonTheme: _elevatedButtonTheme(KadeColors.tealDark, KadeColors.bgDark),
+    filledButtonTheme: _filledButtonTheme(KadeColors.tealDark, KadeColors.bgDark),
+    navigationBarTheme: _navBarTheme(KadeColors.surfaceDark, KadeColors.tealDark, KadeColors.textSoftDark),
+    outlinedButtonTheme: _outlinedButtonTheme(KadeColors.tealDark, KadeColors.borderDark),
+    textButtonTheme: _textButtonTheme(KadeColors.tealDark),
+    snackBarTheme: _snackBarTheme(KadeColors.textDark, KadeColors.surfaceDark),
+    chipTheme: _chipTheme(KadeColors.surfaceMutedDark, KadeColors.textDark, KadeColors.borderDark),
+  );
+}
+
+InputDecorationTheme _inputTheme(Color fill, Color border, Color focus, Color error) {
+  OutlineInputBorder side(Color c, [double w = 1]) => OutlineInputBorder(
+    borderRadius: BorderRadius.circular(KadeRadius.md),
+    borderSide: BorderSide(color: c, width: w),
+  );
+  return InputDecorationTheme(
+    filled: true,
+    fillColor: fill,
+    contentPadding: const EdgeInsets.symmetric(horizontal: KadeSpacing.md, vertical: KadeSpacing.md),
+    border: side(border),
+    enabledBorder: side(border),
+    focusedBorder: side(focus, 2),
+    errorBorder: side(error),
+    focusedErrorBorder: side(error, 2),
+  );
+}
+
+ElevatedButtonThemeData _elevatedButtonTheme(Color bg, Color fg) {
+  return ElevatedButtonThemeData(
+    style: ElevatedButton.styleFrom(
+      backgroundColor: bg,
+      foregroundColor: fg,
+      elevation: 0,
+      padding: const EdgeInsets.symmetric(horizontal: KadeSpacing.lg, vertical: KadeSpacing.md),
+      shape: const StadiumBorder(),
+      textStyle: GoogleFonts.rubik(fontSize: 15, fontWeight: FontWeight.w600),
+    ),
+  );
+}
+
+OutlinedButtonThemeData _outlinedButtonTheme(Color fg, Color border) {
+  return OutlinedButtonThemeData(
+    style: OutlinedButton.styleFrom(
+      foregroundColor: fg,
+      side: BorderSide(color: border),
+      padding: const EdgeInsets.symmetric(horizontal: KadeSpacing.lg, vertical: KadeSpacing.md),
+      shape: const StadiumBorder(),
+      textStyle: GoogleFonts.rubik(fontSize: 15, fontWeight: FontWeight.w600),
+    ),
+  );
+}
+
+FilledButtonThemeData _filledButtonTheme(Color bg, Color fg) {
+  return FilledButtonThemeData(
+    style: FilledButton.styleFrom(
+      backgroundColor: bg,
+      foregroundColor: fg,
+      padding: const EdgeInsets.symmetric(horizontal: KadeSpacing.lg, vertical: KadeSpacing.md),
+      shape: const StadiumBorder(),
+      textStyle: GoogleFonts.rubik(fontSize: 15, fontWeight: FontWeight.w600),
+    ),
+  );
+}
+
+// Bottom bar: white, with a soft blue pill behind the selected tab
+NavigationBarThemeData _navBarTheme(Color bg, Color selected, Color idle) {
+  return NavigationBarThemeData(
+    backgroundColor: bg,
+    surfaceTintColor: Colors.transparent,
+    elevation: 8,
+    shadowColor: KadeColors.cardShadow,
+    indicatorColor: selected.withValues(alpha: 0.12),
+    iconTheme: WidgetStateProperty.resolveWith(
+      (states) => IconThemeData(color: states.contains(WidgetState.selected) ? selected : idle),
+    ),
+    labelTextStyle: WidgetStateProperty.resolveWith(
+      (states) => GoogleFonts.rubik(
+        fontSize: 12,
+        fontWeight: FontWeight.w600,
+        color: states.contains(WidgetState.selected) ? selected : idle,
+      ),
+    ),
+  );
+}
+
+TextButtonThemeData _textButtonTheme(Color fg) {
+  return TextButtonThemeData(
+    style: TextButton.styleFrom(
+      foregroundColor: fg,
+      padding: const EdgeInsets.symmetric(horizontal: KadeSpacing.sm, vertical: KadeSpacing.sm),
+      textStyle: GoogleFonts.rubik(fontSize: 14, fontWeight: FontWeight.w600),
+    ),
+  );
+}
+
+SnackBarThemeData _snackBarTheme(Color fg, Color bg) {
+  return SnackBarThemeData(
+    backgroundColor: fg, // inverted for contrast, like most Material apps
+    contentTextStyle: GoogleFonts.rubik(color: bg, fontWeight: FontWeight.w600),
+    behavior: SnackBarBehavior.floating,
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(KadeRadius.sm)),
+  );
+}
+
+ChipThemeData _chipTheme(Color bg, Color fg, Color border) {
+  return ChipThemeData(
+    backgroundColor: bg,
+    labelStyle: GoogleFonts.rubik(color: fg, fontWeight: FontWeight.w600, fontSize: 12),
+    side: BorderSide(color: border),
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(KadeRadius.pill)),
+    padding: const EdgeInsets.symmetric(horizontal: KadeSpacing.sm, vertical: 2),
+  );
+}
+
+// ---- Global theme toggle (no packages needed) ----
+class ThemeController {
+  static final ValueNotifier<ThemeMode> mode = ValueNotifier(ThemeMode.light);
+
+  static void toggle() {
+    mode.value = mode.value == ThemeMode.light ? ThemeMode.dark : ThemeMode.light;
+  }
+
+  static bool get isDark => mode.value == ThemeMode.dark;
+}
